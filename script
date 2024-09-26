@@ -1,0 +1,44 @@
+// Função para converter um número em palavras (em reais)
+function valorPorExtenso(valor) {
+  const unidades = ["", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove"];
+  const dezenas = ["", "dez", "vinte", "trinta", "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa"];
+  const especiais = ["dez", "onze", "doze", "treze", "quatorze", "quinze", "dezesseis", "dezessete", "dezoito", "dezenove"];
+  const centenas = ["", "cento", "duzentos", "trezentos", "quatrocentos", "quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos"];
+  
+  function numeroPorExtenso(n) {
+    if (n < 10) return unidades[n];
+    else if (n < 20) return especiais[n - 10];
+    else if (n < 100) return dezenas[Math.floor(n / 10)] + (n % 10 !== 0 ? " e " + unidades[n % 10] : "");
+    else if (n < 1000) return centenas[Math.floor(n / 100)] + (n % 100 !== 0 ? " e " + numeroPorExtenso(n % 100) : "");
+    else if (n < 1000000) {
+      const milhares = Math.floor(n / 1000);
+      const resto = n % 1000;
+      return numeroPorExtenso(milhares) + " mil" + (resto !== 0 ? " " + numeroPorExtenso(resto) : "");
+    }
+    else if (n < 1000000000) {
+      const milhoes = Math.floor(n / 1000000);
+      const resto = n % 1000000;
+      return numeroPorExtenso(milhoes) + " milh" + (milhoes > 1 ? "ões" : "ão") + (resto !== 0 ? " " + numeroPorExtenso(resto) : "");
+    }
+    else return ""; // Para simplificação, este script trata apenas números até 999.999.999
+  }
+
+  const partes = valor.toFixed(2).split(".");
+  const reais = parseInt(partes[0]);
+  const centavos = parseInt(partes[1]);
+
+  const reaisExtenso = reais === 0 ? "zero" : numeroPorExtenso(reais);
+  const centavosExtenso = centavos === 0 ? "" : numeroPorExtenso(centavos);
+
+  let resultado = reaisExtenso + " rea" + (reais !== 1 ? "is" : "l");
+  if (centavos > 0) {
+    resultado += " e " + centavosExtenso + " centavo" + (centavos > 1 ? "s" : "");
+  }
+
+  return resultado;
+}
+
+// Função personalizada para ser usada na planilha
+function porextenso(valor) {
+  return valorPorExtenso(valor);
+}
